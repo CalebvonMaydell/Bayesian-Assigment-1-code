@@ -122,5 +122,30 @@ m = 1:50   #"prior sample size"
 mua = (m*75+1203.2)/(m+16)   #posterior mean for a
 mub = mub = (m*75+1240)/(m+16) #posterior mean for b
 
-sa =         #posterior variance for a
-sb =         #posterior variance for b
+sa =     1/(m+16)*(100*m+799.35 + 0.64*m/(m+16))   #posterior variance for a
+sb =    1/(m+16)*(100*m+984.15 + 100*m/(m+16))    #posterior variance for b
+
+# Assuming you have a vector m with length n
+n <- length(m)
+
+# Initialize palb as a vector of zeros or with appropriate dimensions
+palb <- numeric(n)
+
+
+for (i in 1:n) {
+    if (sa[i] > 0 && sb[i] > 0) {
+        samplea <- rnorm(1000, mua[i], sa[i])
+        sampleb <- rnorm(1000, mub[i], sb[i])
+        palb[i] <- mean(samplea < sampleb)
+    } else {
+        # Handle the case where standard deviations are zero, from chat gpt to fix an error
+        palb[i] <- NA
+    }
+}
+
+plot(m,palb)
+summary(lm(palb~m)) #linear model will show if theres a linear trend
+
+
+
+
