@@ -83,3 +83,44 @@ lines(x_values, poisson_dist, col = 'red', type = 'h', lwd = 2)
 legend('topright', legend = c('Data Sample', 'Poisson (λ=1.4)'),
        fill = c('lightblue', 'red'), border = 'black')
 
+
+
+num_samples <- 218
+
+result_matrix <- matrix(0, ncol = 2, nrow = length(sampleswithout))
+
+# Generate samples and count zeros and ones for each
+for (i in 1:length(sampleswithout)) {
+  poisson_params <- sampleswithout[i]
+  sample <- rpois(218, lambda = poisson_params)  
+  
+  # Count zeros and ones
+  num_zeros <- sum(sample == 0)
+  num_ones <- sum(sample == 1)
+  
+  # Store the counts in the matrix
+  result_matrix[i, ] <- c(num_zeros, num_ones)
+}
+
+
+sum(mennobach == 0)   #91
+sum(mennobach == 1)   #60
+
+# Assuming result_matrix is already defined
+smoothScatter(result_matrix[,1], result_matrix[,2], main = "Scatter Plot with Density", xlab = "Zeros", ylab = "Ones", col = "blue", pch = 16)
+
+
+smoothScatter(result_matrix[,1], result_matrix[,2], main = "Scatter Plot with Density", xlab = "Zeros", ylab = "Ones", col = "blue", pch = 16, xlim = c(0, 100), ylim = c(0, 100))
+
+# Highlight the data 
+points(91, 60, col = "red", pch = 16)
+
+
+#5.2
+m = 1:50   #"prior sample size"
+
+mua = (m*75+1203.2)/(m+16)   #posterior mean for a
+mub = mub = (m*75+1240)/(m+16) #posterior mean for b
+
+sa =         #posterior variance for a
+sb =         #posterior variance for b
