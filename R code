@@ -165,7 +165,7 @@ var(remove$yB)
 fulldata<-interexp[1:26,]
 cor(fulldata$yA, fulldata$yB)
 
-
+test<-interexp #I used a test frame so I didnt change the original while testing incremental changes and its annoying to change back
 #replacement function
 # Check if any NA values in the second column (yB)
 if (any(is.na(test$yB))) {
@@ -173,9 +173,10 @@ if (any(is.na(test$yB))) {
   test[is.na(test$yB), "yB"] <- 24.76385 + (test[is.na(test$yB), "yA"] - 24.14115) * 0.6164509 * sqrt(5.321267/4.864169)
 }
 
-
-
 if (any(is.na(test$yA))) {
   # Replace NA values in the first column (yB) with the calculated values
   test[is.na(test$yA), "yA"] <- 24.14115 + (test[is.na(test$yA), "yB"] - 24.76385) * 0.6164509 * sqrt(4.864169/5.321267)
 }
+
+test  #should have full values
+t.test(test$yA, test$yB, paired = TRUE)   # t test for paired 
