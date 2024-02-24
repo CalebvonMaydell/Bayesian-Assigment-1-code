@@ -144,10 +144,40 @@ for (i in 1:n) {
 }
 
 plot(m,palb)
-summary(lm(palb~m)) #linear model will show if theres a linear trend
+summary(lm(palb~m)) #linear model will show if theres a linear trend (mostly so I can justify if theres a relation)
 
+# 6.1
+agam<-128
+bgam<-agam
+ath <-2
+bth<-1
 
+#number of trials and sums
+na = 38
+nb = 256
+sa = 36
+sb = 341
 
+S = 5000 #no of trials
+
+#set initial values
+gamman<-rgamma(1,agam,bgam)
+thetan<-rgamma(1,ath,bth)
+
+set.seed(123)
+for (i in 1:S){
+    thetan<-rgamma(1,sa+sb+ath, na+gamman*nb+bth)
+    gamman<-rgamma(1,sb+agam, thetan*nb + bgam)
+}
+
+thetan
+gamman
+#repeat with each initial value given
+
+thb = thetan*gamman
+tha = thetan
+
+tha-thb
 
 #7.5
 
@@ -164,6 +194,10 @@ var(remove$yB)
 #since the first 26 rows are the useful ones for correlation
 fulldata<-interexp[1:26,]
 cor(fulldata$yA, fulldata$yB)
+
+
+
+
 
 test<-interexp #I used a test frame so I didnt change the original while testing incremental changes and its annoying to change back
 #replacement function
