@@ -149,3 +149,33 @@ summary(lm(palb~m)) #linear model will show if theres a linear trend
 
 
 
+#7.5
+
+interexp <- read.csv("C:/Users/Caleb/OneDrive/Desktop/temp/interexp.csv", sep="")  #adjust to your file location
+View(interexp)
+
+remove<-na.omit(interexp)
+
+mean(remove$yA)
+mean(remove$yB)
+var(remove$yA)
+var(remove$yB)
+
+#since the first 26 rows are the useful ones for correlation
+fulldata<-interexp[1:26,]
+cor(fulldata$yA, fulldata$yB)
+
+
+#replacement function
+# Check if any NA values in the second column (yB)
+if (any(is.na(test$yB))) {
+  # Replace NA values in the second column (yB) with the calculated values
+  test[is.na(test$yB), "yB"] <- 24.76385 + (test[is.na(test$yB), "yA"] - 24.14115) * 0.6164509 * sqrt(5.321267/4.864169)
+}
+
+
+
+if (any(is.na(test$yA))) {
+  # Replace NA values in the first column (yB) with the calculated values
+  test[is.na(test$yA), "yA"] <- 24.14115 + (test[is.na(test$yA), "yB"] - 24.76385) * 0.6164509 * sqrt(4.864169/5.321267)
+}
