@@ -214,3 +214,23 @@ if (any(is.na(test$yA))) {
 
 test  #should have full values
 t.test(test$yA, test$yB, paired = TRUE)   # t test for paired 
+
+
+
+
+#q7 
+
+set.seed(123123)
+p_binomial <- 0.35 
+sample_size <- 10
+num_samples <- 500
+
+binomial_data <- rbinom(num_samples, size = sample_size, prob = p_binomial)
+
+posterior_alpha <- binomial_data + 20
+lowci <- qbeta(0.1, posterior_alpha,30)
+upperci<-qbeta(0.9, posterior_alpha,30)
+
+
+sum(lowci <  p_binomial & p_binomial< upperci)/500
+
