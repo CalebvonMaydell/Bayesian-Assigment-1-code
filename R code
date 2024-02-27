@@ -179,6 +179,9 @@ tha = thetan
 
 tha-thb
 
+
+
+
 #7.5
 
 interexp <- read.csv("C:/Users/Caleb/OneDrive/Desktop/temp/interexp.csv", sep="")  #adjust to your file location
@@ -217,6 +220,58 @@ t.test(test$yA, test$yB, paired = TRUE)   # t test for paired
 
 
 
+#part c
+
+library(mvtnorm)
+
+#input the data values for the initial beliefs
+theta_A = 24.14115
+theta_B = 24.76385
+sigma_squared_A = 5.321267
+sigma_squared_B = 4.864169
+rho = 0.6164509
+
+mu0 <-c(theta_A, theta_B)
+L0 <-matrix(c(5.32, 3.15, 3.15, 4.86), nrow=2, ncol =2)
+
+
+mun=mu0
+Lam0 = L0
+
+#Similar to the slides, we onl have a loose value of this belief
+nu0<-4
+S0<-matrix(c(5.32, 3.15, 3.15, 4.86), nrow=2, ncol =2)
+Sigma<-matrix(c(5.32, 3.15, 3.15, 4.86), nrow=2, ncol =2)
+n<-dim(test)[1] ; ybar<-apply(test,2,mean)
+THETA<-SIGMA<-NULL
+YS<-NULL
+
+set.seed(123123)
+
+for (s in 1:5000)
+{
+    ###update the thetas
+    Ln<-solve(solve(L0)+n*solve(Sigma))
+    mun<-Ln%*%(solve(L0)%*%mu0 + n*solve(Sigma)%*%ybar)
+    theta<-rmvnorm(1,mun,Ln)
+
+
+    ###Sigma update
+     Sn<-S0+(t(test)-c(theta) )%*%t( t(test)-c(theta))
+     Sigma<-solve(rWishart(1,nu0+n, solve(Sn)))
+    
+    YS<-rbind(YS, theta, Sigma)
+
+    #save results
+    THETA<-rbind(THETA,theta)
+    SIGMA<-rbind(SIGMA, c(Sigma))
+
+    cat(s,round(theta,2), round(c(Sigma,2), "\n")
+}
+
+quantile(SIGMA[,2]/sqrt(SIGMA[,1]*SIGMA[,4]), c(0.025, 0.975))
+
+quantile(THETA[,2]-(THETA[,1]), c(0.025, 0.975))
 
 #q7 
 
