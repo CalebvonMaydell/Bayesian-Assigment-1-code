@@ -248,28 +248,27 @@ YS<-NULL
 
 set.seed(123123)
 
-for (s in 1:5000)
-{
+for (s in 1:5000) {
     ###update the thetas
-    Ln<-solve(solve(L0)+n*solve(Sigma))
-    mun<-Ln%*%(solve(L0)%*%mu0 + n*solve(Sigma)%*%ybar)
-    theta<-rmvnorm(1,mun,Ln)
-
+    Ln <- solve(solve(L0) + n * solve(Sigma))
+    mun <- Ln %*% (solve(L0) %*% mu0 + n * solve(Sigma) %*% ybar)
+    theta <- rmvnorm(1, mun, Ln)
 
     ###Sigma update
-     Sn<-S0+(t(test)-c(theta) )%*%t( t(test)-c(theta))
-     Sigma<-solve(rWishart(1,nu0+n, solve(Sn)))
-    
-    YS<-rbind(YS, theta, Sigma)
+    Sn <- S0 + (t(test) - c(theta)) %*% t(t(test) - c(theta))
+    Sigma <- rWishart(1, nu0 + n, Sn)
 
-    #save results
-    THETA<-rbind(THETA,theta)
-    SIGMA<-rbind(SIGMA, c(Sigma))
 
-    cat(s,round(theta,2), round(c(Sigma,2), "\n")
+    YS <- rbind(YS, c(theta, Sigma))
+
+    # save results
+    THETA <- rbind(THETA, theta)
+    SIGMA <- rbind(SIGMA, c(Sigma))
+
+    cat(s, round(theta, 2), round(c(Sigma), 2), "\n")
 }
 
-quantile(SIGMA[,2]/sqrt(SIGMA[,1]*SIGMA[,4]), c(0.025, 0.975))
+quantile(SIGMsolA[,2]/sqrt(SIGMA[,1]*SIGMA[,4]), c(0.025, 0.975))
 
 quantile(THETA[,2]-(THETA[,1]), c(0.025, 0.975))
 
@@ -288,4 +287,8 @@ upperci<-qbeta(0.9, posterior_alpha,30)
 
 
 sum(lowci <  p_binomial & p_binomial< upperci)/500
+
+
+
+#part 2
 
