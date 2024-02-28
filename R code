@@ -290,5 +290,62 @@ sum(lowci <  p_binomial & p_binomial< upperci)/500
 
 
 
-#part 2
+#part 2- bayesian sample
+set.seed(123123)
 
+totalinrange =0
+
+for(i in 1:500){
+    param <-rbeta(1,20,20) # take a random sample
+    data<-rbinom(10,1, param)
+    postalp<-sum(data)
+    
+    lower<-qbeta(0.1, 20+postalp, 30)
+    upper<-qbeta(0.9, 20+postalp, 30)
+    if(param>lower && param< upper){
+    totalinrange = totalinrange+1
+}
+}
+totalinrange
+
+
+#question 8
+
+
+# Load necessary libraries
+library(stats)
+
+# Define the constants
+k <- 3
+sigma_y <- 1  # Variance of the observed data distribution
+
+# Define the function for the posterior mean
+posterior_mean <- function(tau_squared, y) {
+  precision <- 1 / (sigma_y^2 + 1 / tau_squared)
+  mean_posterior <- precision * sum(y) / (sigma_y^2)
+  return(mean_posterior)
+}
+
+# Define the Bayes risk function
+bayes_risk <- function(tau_squared) {
+  # Integrate the squared error over the parameter space
+  integrand <- function(y) {
+    posterior_mean_squared <- (posterior_mean(tau_squared, y) - y)^2
+    return(posterior_mean_squared * dnorm(y, mean = 0, sd = sqrt(tau_squared)))
+  }
+  result <- integrate(integrand, lower = -Inf, upper = Inf)
+  return(result$value)
+}
+
+# Vectorize the Bayes risk function for multiple values of tau_squared
+vec_bayes_risk <- Vectorize(bayes_risk)
+
+# Define a range of tau_squared values
+tau_squared_values <- seq(0.1, 10, by = 0.1)
+
+# Calculate Bayes risk for each tau_squared value
+risks <- vec_bayes_risk(tau_squared_values)
+
+# Plot the Bayes risk against tau_squared
+plot(tau_squared_values, risks, type = "l", col = "blue", xlab = expression(tau^2), ylab = "Bayes Risk",
+     main = "Bayes Risk vs Tau^2")
